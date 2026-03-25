@@ -7,6 +7,7 @@
 
 ### Pocket AI Content Creator ✓
 - **Status:** Live on Skool (skool.com/pocket-ai-hustle-8584)
+- **Files:** `/classroom/AI Content Creator/`
 - **Format:** 6-module course, beginner-focused, action-first
 - **Audience:** Beginners aged 25–45 — career switchers, side hustlers, freelancers
 - **Transformation:** Stuck consumer → active builder who has published their first digital asset

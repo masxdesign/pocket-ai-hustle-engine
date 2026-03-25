@@ -13,8 +13,8 @@ Read the business context from: `business-context/master-business-context.md`
 
 ## Process
 
-1. Ask which course to improve — or look for course files in `courses/`
-2. Read the full course outline
+1. Ask which course to improve — or look for course files in `classroom/`
+2. Read the full course outline and all lesson files from `classroom/[Course Name]/`
 3. Evaluate against the criteria below
 4. Present findings as: **strengths**, **gaps**, and **specific improvement suggestions**
 5. Apply changes if the owner agrees
@@ -62,4 +62,4 @@ Direct and constructive. Lead with what's working, then what could be stronger. 
 
 ## Output
 
-Revised course outline saved to the same file, or a new draft saved alongside the original. Show a summary of what changed.
+Revised lesson files saved back to `classroom/[Course Name]/` — update the specific lesson files that changed. Show a summary of what changed.

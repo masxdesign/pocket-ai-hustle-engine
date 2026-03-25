@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classroom Browser</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 { font-size: 15px; font-weight: 600; }
+
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    #sidebar {
+      width: 260px;
+      min-width: 220px;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+      padding: 12px 0;
+    }
+
+    .tree-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tree-label:hover { background: #f5f5f5; }
+    .tree-label.active { background: #f0f0f0; font-weight: 600; }
+
+    .arrow {
+      font-size: 10px;
+      color: #999;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+    .arrow.open { transform: rotate(90deg); }
+
+    .tree-children { display: none; }
+    .tree-children.open { display: block; }
+
+    /* depth indentation */
+    .d1 > .tree-label { padding-left: 16px; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #555; }
+    .d2 > .tree-label { padding-left: 28px; font-weight: 500; }
+    .d3 > .tree-label { padding-left: 42px; color: #555; }
+    .d4 > .tree-label { padding-left: 56px; color: #666; }
+
+    /* CONTENT */
+    #content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #content-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 49px;
+    }
+
+    #breadcrumb { font-size: 12px; color: #999; flex: 1; }
+
+    .copy-btn {
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      display: none;
+    }
+    #copy-md  { background: #444; }
+    #copy-md:hover  { background: #222; }
+    #copy-html { background: #1a56db; }
+    #copy-html:hover { background: #1240a8; }
+    .copy-btn.copied { background: #2e7d32 !important; }
+
+    #pane {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 36px;
+    }
+
+    #placeholder { color: #ccc; font-size: 14px; text-align: center; margin-top: 80px; }
+
+    /* MARKDOWN PREVIEW */
+    #preview { display: none; max-width: 700px; }
+    #preview h1 { font-size: 22px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+    #preview h2 { font-size: 17px; font-weight: 600; margin: 24px 0 10px; }
+    #preview h3 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
+    #preview p { font-size: 14px; line-height: 1.75; margin-bottom: 12px; color: #333; }
+    #preview ul, #preview ol { padding-left: 20px; margin-bottom: 12px; }
+    #preview li { font-size: 14px; line-height: 1.75; color: #333; margin-bottom: 4px; }
+    #preview strong { font-weight: 600; color: #1a1a1a; }
+    #preview hr { border: none; border-top: 1px solid #e0e0e0; margin: 20px 0; }
+    #preview code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-size: 13px; font-family: monospace; }
+    #preview pre { background: #f5f5f5; padding: 14px; border-radius: 6px; overflow-x: auto; margin-bottom: 12px; }
+    #preview pre code { background: none; padding: 0; }
+    #preview table { border-collapse: collapse; width: 100%; margin-bottom: 12px; font-size: 13px; }
+    #preview th, #preview td { border: 1px solid #e0e0e0; padding: 8px 12px; text-align: left; }
+    #preview th { background: #f5f5f5; font-weight: 600; }
+    #preview blockquote { border-left: 3px solid #e0e0e0; padding-left: 14px; color: #666; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Classroom Browser</h1>
+</header>
+
+<div class="layout">
+  <nav id="sidebar"><div style="padding:16px;color:#bbb;font-size:13px;">Loading…</div></nav>
+  <div id="content">
+    <div id="content-header">
+      <span id="breadcrumb"></span>
+      <button id="copy-md"   class="copy-btn">Copy Markdown</button>
+      <button id="copy-html" class="copy-btn">Copy Rich Text</button>
+    </div>
+    <div id="pane">
+      <div id="placeholder">Select a file to preview it.</div>
+      <div id="preview"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const sidebar     = document.getElementById('sidebar');
+  const preview     = document.getElementById('preview');
+  const placeholder = document.getElementById('placeholder');
+  const copyMdBtn   = document.getElementById('copy-md');
+  const copyHtmlBtn = document.getElementById('copy-html');
+  const breadcrumb  = document.getElementById('breadcrumb');
+  let currentRaw    = '';
+  let currentHtml   = '';
+
+  // ── Load tree from server ──────────────────────────────────
+  async function loadTree() {
+    const res = await fetch('/api/tree');
+    const tree = await res.json();
+    sidebar.innerHTML = '';
+    renderTree(tree, sidebar, 1);
+  }
+
+  function renderTree(nodes, container, depth) {
+    for (const node of nodes) {
+      const item = document.createElement('div');
+      item.className = `d${Math.min(depth, 4)}`;
+
+      const label = document.createElement('div');
+      label.className = 'tree-label';
+
+      if (node.type === 'dir') {
+        const arrow = document.createElement('span');
+        arrow.className = 'arrow';
+        arrow.textContent = '▶';
+
+        const icon = document.createElement('span');
+        icon.textContent = depth === 1 ? '🌐' : '📁';
+
+        const name = document.createElement('span');
+        name.textContent = node.name;
+
+        label.append(arrow, icon, name);
+
+        const children = document.createElement('div');
+        children.className = 'tree-children';
+        renderTree(node.children, children, depth + 1);
+
+        label.addEventListener('click', () => {
+          const open = children.classList.toggle('open');
+          arrow.classList.toggle('open', open);
+        });
+
+        item.append(label, children);
+
+      } else {
+        const icon = document.createElement('span');
+        icon.textContent = '📄';
+
+        const name = document.createElement('span');
+        name.textContent = node.name.replace(/\.md$/, '').replace(/-/g, ' ');
+
+        label.append(icon, name);
+
+        label.addEventListener('click', () => {
+          document.querySelectorAll('.tree-label.active').forEach(el => el.classList.remove('active'));
+          label.classList.add('active');
+          loadFile(node.path, node.name);
+        });
+
+        item.appendChild(label);
+      }
+
+      container.appendChild(item);
+    }
+  }
+
+  // ── Load file from server ──────────────────────────────────
+  async function loadFile(filePath, fileName) {
+    const res = await fetch(`/api/file?path=${encodeURIComponent(filePath)}`);
+    const text = await res.text();
+    currentRaw = text;
+
+    breadcrumb.textContent = filePath.replace(/\\/g, ' / ').replace(/\//g, ' / ');
+    renderMarkdown(text);
+
+    copyMdBtn.style.display = 'block';
+    copyHtmlBtn.style.display = 'block';
+    [copyMdBtn, copyHtmlBtn].forEach(btn => { btn.classList.remove('copied'); });
+    copyMdBtn.textContent = 'Copy Markdown';
+    copyHtmlBtn.textContent = 'Copy HTML';
+  }
+
+  // ── Copy helpers ───────────────────────────────────────────
+  function flashCopied(btn, label) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = label; btn.classList.remove('copied'); }, 2000);
+  }
+
+  copyMdBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(currentRaw);
+    flashCopied(copyMdBtn, 'Copy Markdown');
+  });
+
+  copyHtmlBtn.addEventListener('click', async () => {
+    const blob = new Blob([currentHtml], { type: 'text/html' });
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': blob })]);
+    flashCopied(copyHtmlBtn, 'Copy Rich Text');
+  });
+
+  // ── Markdown renderer ──────────────────────────────────────
+  function renderMarkdown(md) {
+    placeholder.style.display = 'none';
+    preview.style.display = 'block';
+
+    let html = md
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/```[\w]*\n([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/^---$/gm, '<hr>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+      .replace(/^\d+\.\s(.+)$/gm, '<li>$1</li>')
+      .replace(/^&gt;\s(.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // Tables
+    html = html.replace(/(\|.+\|\n?)+/g, tableBlock => {
+      const rows = tableBlock.trim().split('\n');
+      let out = '<table>';
+      rows.forEach((row, i) => {
+        if (/^\|[-| :]+\|$/.test(row)) return;
+        const cells = row.split('|').slice(1, -1);
+        const tag = i === 0 ? 'th' : 'td';
+        out += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
+      });
+      return out + '</table>';
+    });
+
+    // Paragraphs
+    html = html.split('\n\n').map(block => {
+      block = block.trim();
+      if (!block) return '';
+      if (/^<(h[1-6]|ul|ol|hr|pre|blockquote|table)/.test(block)) return block;
+      return `<p>${block.replace(/\n/g, ' ')}</p>`;
+    }).join('\n');
+
+    currentHtml = html;
+    preview.innerHTML = html;
+  }
+
+  loadTree();
+</script>
+</body>
+</html>

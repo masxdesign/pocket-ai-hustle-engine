@@ -1,6 +1,6 @@
 # Master Business Context — Pocket AI Hustle
 
-> Last updated: 2026-03-25 (promo video assets + bilingual market confirmed)
+> Last updated: 2026-03-25 (classroom folder live — revised_lessons removed, all changes merged into main lesson files)
 > Stage: growing
 > Ecosystem tier: full
 
@@ -82,6 +82,7 @@ We believe everyone with an idea and access to AI can build something real. We'r
   - Module 5: Launch & Share
   - Module 6: Repeat & Scale
   - Bonus: 24-Hour Quick Start Plan, 60-Minute Digital Asset Challenge, Beginner Prompt Pack, Simple Daily AI Workflow
+  - **Course files location:** `/classroom/AI Content Creator/` — all lesson `.md` files live here
 - **Promo videos** (in production) — ~2-minute animated videos in English and Spanish with AI-generated voiceover and background music. Primary marketing material for Course 1, directing viewers to join on Skool.
 - Supporting assets in progress: onboarding content, post ideas, workflows
 
@@ -106,6 +107,11 @@ Pocket AI Hustle is a community-led education business already in motion. With a
 **Future revenue:** Recurring membership tier, affiliate/partnership revenue
 **Pricing approach:** Accessible entry points with clear upsell path to higher-value products and programs
 
+## Project Structure
+
+- `/classroom/` — contains all course content as markdown files
+  - `/classroom/AI Content Creator/` — Course 1 lesson files (one `.md` per lesson); these are the single source of truth
+
 ## Ecosystem Rules
 
 These rules apply to all generated skills and content:
@@ -116,4 +122,5 @@ These rules apply to all generated skills and content:
 4. Use beginner-friendly language unless the specific course targets intermediate/advanced learners
 5. When in doubt, prioritise practical over theoretical — every output should help someone build or ship something
 6. Bilingual awareness: English-first, but keep Spanish-language expansion in mind for all content decisions
+7. When working with course files, read directly from `/classroom/` — lesson files there are the single source of truth
 

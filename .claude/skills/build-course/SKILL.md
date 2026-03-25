@@ -85,4 +85,6 @@ Warm, direct, and energizing. Coach voice, not lecture voice. Short sentences. P
 
 ## Output
 
-Save the course outline to: `courses/[course-slug]/course-outline.md`
+Save the course outline to: `classroom/[Course Name]/course-outline.md`
+
+Individual lesson files should be saved as: `classroom/[Course Name]/module-[N]-lesson-[N]-[lesson-slug].md`

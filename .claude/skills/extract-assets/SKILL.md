@@ -14,7 +14,7 @@ Read the business context from: `business-context/master-business-context.md`
 ## Process
 
 1. Ask which course to extract assets from (or accept pasted content directly)
-2. Read the full course content
+2. Read the full course content from `classroom/[Course Name]/` — read all lesson `.md` files in that folder
 3. Identify all extractable assets and present a list with descriptions
 4. Ask which assets the owner wants to develop
 5. Generate the selected assets in full
