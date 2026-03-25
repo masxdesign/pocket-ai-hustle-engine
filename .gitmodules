@@ -1,0 +1,3 @@
+[submodule "artifacts/video-studio"]
+	path = artifacts/video-studio
+	url = https://github.com/masxdesign/pocket-ai-hustle-video-studio.git
